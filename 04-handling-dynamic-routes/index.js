@@ -1,0 +1,31 @@
+import { createServer } from 'http';
+import { parse } from 'url';
+
+
+const server = createServer((req, res) => {
+    // Parse the URL from the incoming request and extract only the pathname (e.g., "/api/users/5")
+    const pathname = parse(req.url).pathname;
+
+    // Defining a regex pattern that matches paths like "/api/users/1", "/api/users/42"
+    const regex = /^\/api\/users\/([1-9][0-9]*)$/;
+
+    const match = pathname.match(regex);
+
+    if (match) {
+        // If matched, extract the captured group which is the dynamic user ID from the URL
+        const userId = match[1];
+
+        console.log(`User ID is ${userId}`);
+
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+
+        res.end(`User ID is ${userId}`);
+    } else {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+    }
+});
+
+server.listen(8000, () => {
+    console.log('Server running at http://localhost:8000');
+});
